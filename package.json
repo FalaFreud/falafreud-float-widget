@@ -1,6 +1,6 @@
 
 {
-  "name": "-falafreud-float-widget",
+  "name": "falafreud-float-widget",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -13,6 +13,6 @@
   "author": "",
   "license": "",
   "peerDependencies": {
-    "react-native": "^0.41.2"
+    "react-native": "0.51.0"
   }
 }
