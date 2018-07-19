@@ -32,8 +32,16 @@
         "source": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/anim/abc_slide_in_top.xml"
     },
     {
+        "merged": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/build/intermediates/res/merged/release/anim/remove_icon_slide_down_animation.xml",
+        "source": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/src/main/res/anim/remove_icon_slide_down_animation.xml"
+    },
+    {
         "merged": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/build/intermediates/res/merged/release/anim/abc_slide_out_top.xml",
         "source": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/anim/abc_slide_out_top.xml"
+    },
+    {
+        "merged": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/build/intermediates/res/merged/release/anim/remove_icon_slide_up_animation.xml",
+        "source": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/src/main/res/anim/remove_icon_slide_up_animation.xml"
     },
     {
         "merged": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/build/intermediates/res/merged/release/anim/catalyst_fade_out.xml",
@@ -60,15 +68,7 @@
         "source": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/anim/abc_slide_out_bottom.xml"
     },
     {
-        "merged": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/build/intermediates/res/merged/release/anim/slide_down.xml",
-        "source": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/src/main/res/anim/slide_down.xml"
-    },
-    {
         "merged": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/build/intermediates/res/merged/release/anim/abc_slide_in_bottom.xml",
         "source": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/anim/abc_slide_in_bottom.xml"
-    },
-    {
-        "merged": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/build/intermediates/res/merged/release/anim/slide_up.xml",
-        "source": "/Users/Teruya/Documents/react-native-development/workspace/falafreud-app/node_modules/falafreud-float-widget/android/src/main/res/anim/slide_up.xml"
     }
 ]

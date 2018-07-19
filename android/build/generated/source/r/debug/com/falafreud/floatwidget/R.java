@@ -25,8 +25,8 @@ public final class R {
         public static int catalyst_push_up_out=0x7f04000d;
         public static int catalyst_slide_down=0x7f04000e;
         public static int catalyst_slide_up=0x7f04000f;
-        public static int slide_down=0x7f040010;
-        public static int slide_up=0x7f040011;
+        public static int remove_icon_slide_down_animation =0x7f040010;
+        public static int remove_icon_slide_up_animation =0x7f040011;
     }
     public static final class attr {
         /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
@@ -1819,8 +1819,8 @@ containing a value of this type.
         public static int abc_textfield_search_default_mtrl_alpha=0x7f02003c;
         public static int abc_textfield_search_material=0x7f02003d;
         public static int bottom_shadow=0x7f02003e;
-        public static int draw_logo_blue=0x7f02003f;
-        public static int ic_close=0x7f020040;
+        public static int logo_symbol =0x7f02003f;
+        public static int remove_shape =0x7f020040;
         public static int logo_negative_symbol=0x7f020041;
         public static int logo_shape=0x7f020042;
         public static int notification_template_icon_bg=0x7f020043;
@@ -1942,7 +1942,7 @@ containing a value of this type.
         public static int view_tag_native_id=0x7f0c000a;
         public static int withText=0x7f0c0029;
         public static int wrap_content=0x7f0c002a;
-        public static int xButton=0x7f0c0074;
+        public static int remove_button =0x7f0c0074;
         public static int xButtonImg=0x7f0c0075;
     }
     public static final class integer {
@@ -1995,7 +1995,7 @@ containing a value of this type.
         public static int select_dialog_multichoice_material=0x7f030027;
         public static int select_dialog_singlechoice_material=0x7f030028;
         public static int support_simple_spinner_dropdown_item=0x7f030029;
-        public static int x_button_holder=0x7f03002a;
+        public static int remove_float_layout =0x7f03002a;
     }
     public static final class string {
         public static int abc_action_bar_home_description=0x7f060000;

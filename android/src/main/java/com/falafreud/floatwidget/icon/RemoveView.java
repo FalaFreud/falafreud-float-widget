@@ -33,15 +33,15 @@ public class RemoveView {
 
     protected RemoveView(Context context) {
 
-        layout = LayoutInflater.from(context).inflate(R.layout.x_button_holder, null);
-        button = layout.findViewById(R.id.xButton);
+        layout = LayoutInflater.from(context).inflate(R.layout.remove_float_layout, null);
+        button = layout.findViewById(R.id.remove_button);
         buttonImage = (ImageView) layout.findViewById(R.id.xButtonImg);
-        buttonImage.setImageResource(R.drawable.ic_close);
+        buttonImage.setImageResource(R.drawable.remove_shape);
         buttonBottomPadding = button.getPaddingBottom();
         shadow = layout.findViewById(R.id.shadow);
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        showAnim = new Animator(button, R.anim.slide_up);
-        hideAnim = new Animator(button, R.anim.slide_down);
+        showAnim = new Animator(button, R.anim.remove_icon_slide_up_animation);
+        hideAnim = new Animator(button, R.anim.remove_icon_slide_down_animation);
         shadowFadeIn = new Animator(shadow, android.R.anim.fade_in);
         shadowFadeOut = new Animator(shadow, android.R.anim.fade_out);
     }

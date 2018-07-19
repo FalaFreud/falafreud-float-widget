@@ -1,6 +1,5 @@
+import FloatWidgetManager from './module/floatwidget/';
 
-import { NativeModules } from 'react-native';
-
-const { FalafreudFloatWidget } = NativeModules;
-
-export default FalafreudFloatWidget;
+module.exports = {
+    FloatWidgetManager,
+}

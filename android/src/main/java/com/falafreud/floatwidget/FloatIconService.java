@@ -2,13 +2,16 @@ package com.falafreud.floatwidget;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.facebook.react.bridge.ReactMethod;
 import com.falafreud.floatwidget.icon.IconCallback;
 import com.falafreud.floatwidget.icon.Magnet;
 
@@ -31,12 +34,32 @@ public class FloatIconService extends Service implements IconCallback
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Log.d(TAG, "FloatIconService onStartCommand");
+        return START_STICKY;
+    }
+
+    @Override
     public void onCreate()
     {
         super.onCreate();
 
-        Log.d(TAG, "onCreate");
+        Log.d(TAG, "FloatIconService onCreate");
         this.startMagnet();
+    }
+
+    /**
+     * This event can be called by "...stopService(new Intent(...))".
+     * Event this event been called, must implement the methods that destroy the UI and the service
+     * itself.
+     */
+    @Override
+    public void onDestroy() {
+
+        Log.d(TAG, "FloatIconService onDestroy");
+        this.destroy();
+        super.onDestroy();
     }
 
     void destroy()
@@ -61,7 +84,7 @@ public class FloatIconService extends Service implements IconCallback
                     .setIconCallback(this)
                     .setHideFactor(0.2f)
                     .setShouldShowRemoveView(true)
-                    .setRemoveIconResId(R.drawable.ic_close)
+                    .setRemoveIconResId(R.drawable.remove_shape)
                     .setRemoveIconShadow(R.drawable.bottom_shadow)
                     .setShouldStickToWall(true)
                     .setRemoveIconShouldBeResponsive(true)
@@ -94,14 +117,14 @@ public class FloatIconService extends Service implements IconCallback
     @Override
     public void onIconClick(View icon, float x, float y)
     {
-        Log.i(TAG, "onIconClick");
+        Log.i(TAG, "FloatIconService onIconClick");
         Toast.makeText(FloatIconService.this, "GO GO GO!", Toast.LENGTH_SHORT).show();
 
         PackageManager packageManager = FloatIconService.this.getPackageManager();
         Intent launchIntent = packageManager.getLaunchIntentForPackage("com.falafreud.falafreud");
         FloatIconService.this.startActivity(launchIntent);
 
-        FloatIconService.this.destroy();
+//        FloatIconService.this.destroy();
     }
 
     /**
@@ -111,7 +134,7 @@ public class FloatIconService extends Service implements IconCallback
     @Override
     public void onFlingAway()
     {
-        Log.i(TAG, "onFlingAway");
+        Log.i(TAG, "FloatIconService onFlingAway");
         if (magnet != null)
         {
             magnet.destroy();
@@ -126,7 +149,7 @@ public class FloatIconService extends Service implements IconCallback
     @Override
     public void onIconDestroyed()
     {
-        Log.i(TAG, "onIconDestroyed()");
+        Log.i(TAG, "FloatIconService onIconDestroyed()");
         this.stopSelf();
     }
 }
