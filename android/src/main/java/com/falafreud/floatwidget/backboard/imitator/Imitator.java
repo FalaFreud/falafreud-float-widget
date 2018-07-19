@@ -1,6 +1,7 @@
 package com.falafreud.floatwidget.backboard.imitator;
 
 import android.support.annotation.NonNull;
+
 import com.facebook.rebound.Spring;
 
 /**
@@ -10,151 +11,146 @@ import com.facebook.rebound.Spring;
  */
 public abstract class Imitator {
 
-	/**
-	 * Directly map the imitatee to the spring.
-	 */
-	public static final int TRACK_ABSOLUTE = 1;
-	/**
-	 * Whether or not the spring will simply connect the object to the property we are imitating.
-	 */
-	protected int mTrackStrategy = TRACK_ABSOLUTE;
-	/**
-	 * Map the change in the imitatee to the spring.
-	 */
-	public static final int TRACK_DELTA = 2;
-	/**
-	 * Map the imitatee to the current value of the spring.
-	 */
-	public static final int FOLLOW_EXACT = 1;
-	/**
-	 * Whether or not the spring will simply connect the object to the property we are imitating.
-	 */
-	protected int mFollowStrategy = FOLLOW_EXACT;
-	/**
-	 * Map the imitatee to the end value of the spring.
-	 */
-	public static final int FOLLOW_SPRING = 2;
+    /**
+     * Directly map the imitatee to the spring.
+     */
+    public static final int TRACK_ABSOLUTE = 1;
+    /**
+     * Whether or not the spring will simply connect the object to the property we are imitating.
+     */
+    protected int mTrackStrategy = TRACK_ABSOLUTE;
+    /**
+     * Map the change in the imitatee to the spring.
+     */
+    public static final int TRACK_DELTA = 2;
+    /**
+     * Map the imitatee to the current value of the spring.
+     */
+    public static final int FOLLOW_EXACT = 1;
+    /**
+     * Whether or not the spring will simply connect the object to the property we are imitating.
+     */
+    protected int mFollowStrategy = FOLLOW_EXACT;
+    /**
+     * Map the imitatee to the end value of the spring.
+     */
+    public static final int FOLLOW_SPRING = 2;
 
-	/**
-	 * The spring to perturb.
-	 */
-	@NonNull
-	protected Spring mSpring;
-	/**
-	 * The desired rest value of the spring when not being perturbed.
-	 */
-	protected double mRestValue;
+    /**
+     * The spring to perturb.
+     */
+    @NonNull
+    protected Spring mSpring;
+    /**
+     * The desired rest value of the spring when not being perturbed.
+     */
+    protected double mRestValue;
 
-	/**
-	 * Intended to be used as part of a builder. The spring must be set with {@link #setSpring(Spring)}.
-	 *
-	 * @param restValue
-	 * 		the rest value for the spring.
-	 * @param trackStrategy
-	 * 		the tracking strategy.
-	 * @param followStrategy
-	 * 		the follow strategy.
-	 */
-	protected Imitator(final double restValue, final int trackStrategy, final int followStrategy) {
-		this(null, restValue, trackStrategy, followStrategy);
-	}
+    /**
+     * Intended to be used as part of a builder. The spring must be set with {@link #setSpring(Spring)}.
+     *
+     * @param restValue      the rest value for the spring.
+     * @param trackStrategy  the tracking strategy.
+     * @param followStrategy the follow strategy.
+     */
+    protected Imitator(final double restValue, final int trackStrategy, final int followStrategy) {
 
-	/**
-	 * Constructor. Uses {@link #TRACK_ABSOLUTE} and {@link #FOLLOW_EXACT}.
-	 *
-	 * @param spring
-	 * 		the spring to use.
-	 */
-	protected Imitator(@NonNull final Spring spring) {
-		this(spring, TRACK_ABSOLUTE, FOLLOW_EXACT);
-	}
+        this(null, restValue, trackStrategy, followStrategy);
+    }
 
-	/**
-	 * Constructor.
-	 *
-	 * @param spring
-	 * 		the spring to use.
-	 * @param trackStrategy
-	 * 		the tracking strategy.
-	 * @param followStrategy
-	 * 		the follow strategy.
-	 */
-	protected Imitator(@NonNull final Spring spring, final int trackStrategy, final int followStrategy) {
-		this(spring, spring.getEndValue(), trackStrategy, followStrategy);
-	}
+    /**
+     * Constructor. Uses {@link #TRACK_ABSOLUTE} and {@link #FOLLOW_EXACT}.
+     *
+     * @param spring the spring to use.
+     */
+    protected Imitator(@NonNull final Spring spring) {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param spring
-	 * 		the spring to use.
-	 * @param restValue
-	 * 		the rest value for the spring.
-	 * @param trackStrategy
-	 * 		the tracking strategy.
-	 * @param followStrategy
-	 * 		the follow strategy.
-	 */
-	protected Imitator(@NonNull final Spring spring, final double restValue, final int trackStrategy, final int followStrategy) {
-		mSpring = spring;
-		mRestValue = restValue;
-		mTrackStrategy = trackStrategy;
-		mFollowStrategy = followStrategy;
-	}
+        this(spring, TRACK_ABSOLUTE, FOLLOW_EXACT);
+    }
 
-	/**
-	 * @param motionValue
-	 * 		Maps the value we are tracking to the value of the spring.
-	 * @return the new end value of the spring. If set to {@link #FOLLOW_EXACT}, it is also the current value of the
-	 * spring.
-	 */
-	protected abstract double mapToSpring(final float motionValue);
+    /**
+     * Constructor.
+     *
+     * @param spring         the spring to use.
+     * @param trackStrategy  the tracking strategy.
+     * @param followStrategy the follow strategy.
+     */
+    protected Imitator(@NonNull final Spring spring, final int trackStrategy, final int followStrategy) {
 
-	public int getTrackStrategy() {
-		return mTrackStrategy;
-	}
+        this(spring, spring.getEndValue(), trackStrategy, followStrategy);
+    }
 
-	/**
-	 * @param trackStrategy
-	 * 		the desired tracking strategy
-	 * @return this object for chaining
-	 */
-	@NonNull
-	public Imitator setTrackStrategy(final int trackStrategy) {
-		mTrackStrategy = trackStrategy;
-		return this;
-	}
+    /**
+     * Constructor.
+     *
+     * @param spring         the spring to use.
+     * @param restValue      the rest value for the spring.
+     * @param trackStrategy  the tracking strategy.
+     * @param followStrategy the follow strategy.
+     */
+    protected Imitator(@NonNull final Spring spring, final double restValue, final int trackStrategy, final int followStrategy) {
 
-	public int getFollowStrategy() {
-		return mFollowStrategy;
-	}
+        mSpring = spring;
+        mRestValue = restValue;
+        mTrackStrategy = trackStrategy;
+        mFollowStrategy = followStrategy;
+    }
 
-	/**
-	 * @param followStrategy
-	 * 		the desired follow strategy
-	 * @return this object for chaining
-	 */
-	@NonNull
-	public Imitator setFollowStrategy(final int followStrategy) {
-		mFollowStrategy = followStrategy;
-		return this;
-	}
+    /**
+     * @param motionValue Maps the value we are tracking to the value of the spring.
+     * @return the new end value of the spring. If set to {@link #FOLLOW_EXACT}, it is also the current value of the
+     * spring.
+     */
+    protected abstract double mapToSpring(final float motionValue);
 
-	@NonNull
-	public Spring getSpring() {
-		return mSpring;
-	}
+    public int getTrackStrategy() {
 
-	/**
-	 * @param spring
-	 * 		the spring to set (sets spring's current to the rest value)
-	 */
-	public void setSpring(@NonNull final Spring spring) {
-		mSpring = spring;
+        return mTrackStrategy;
+    }
 
-		if (mSpring != null) {
-			// Start spring at rest.
-			mSpring.setCurrentValue(mRestValue, true);
-		}
-	}
+    /**
+     * @param trackStrategy the desired tracking strategy
+     * @return this object for chaining
+     */
+    @NonNull
+    public Imitator setTrackStrategy(final int trackStrategy) {
+
+        mTrackStrategy = trackStrategy;
+        return this;
+    }
+
+    public int getFollowStrategy() {
+
+        return mFollowStrategy;
+    }
+
+    /**
+     * @param followStrategy the desired follow strategy
+     * @return this object for chaining
+     */
+    @NonNull
+    public Imitator setFollowStrategy(final int followStrategy) {
+
+        mFollowStrategy = followStrategy;
+        return this;
+    }
+
+    @NonNull
+    public Spring getSpring() {
+
+        return mSpring;
+    }
+
+    /**
+     * @param spring the spring to set (sets spring's current to the rest value)
+     */
+    public void setSpring(@NonNull final Spring spring) {
+
+        mSpring = spring;
+
+        if (mSpring != null) {
+            // Start spring at rest.
+            mSpring.setCurrentValue(mRestValue, true);
+        }
+    }
 }

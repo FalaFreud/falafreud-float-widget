@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
+
 import com.facebook.rebound.Spring;
 
 /**
@@ -13,55 +14,56 @@ import com.facebook.rebound.Spring;
  */
 public class ToggleImitator extends EventImitator implements View.OnTouchListener {
 
-	private double mActiveValue;
+    private double mActiveValue;
 
-	/**
-	 * Constructor. It is necessary to call {@link #setSpring(Spring)} to set the spring.
-	 *
-	 * @param spring
-	 * 		the spring to use.
-	 * @param restValue
-	 * 		the value when off.
-	 * @param activeValue
-	 * 		the value when on.
-	 */
-	public ToggleImitator(@NonNull final Spring spring, final double restValue, final double activeValue) {
-		super(spring, restValue, TRACK_ABSOLUTE, FOLLOW_EXACT);
-		mActiveValue = activeValue;
-	}
+    /**
+     * Constructor. It is necessary to call {@link #setSpring(Spring)} to set the spring.
+     *
+     * @param spring      the spring to use.
+     * @param restValue   the value when off.
+     * @param activeValue the value when on.
+     */
+    public ToggleImitator(@NonNull final Spring spring, final double restValue, final double activeValue) {
 
-	@Override
-	public void constrain(final MotionEvent event) {
-		mSpring.setEndValue(mActiveValue);
-	}
+        super(spring, restValue, TRACK_ABSOLUTE, FOLLOW_EXACT);
+        mActiveValue = activeValue;
+    }
 
-	@Override
-	protected double mapToSpring(final float motionValue) {
-		// not used
-		return mActiveValue;
-	}
+    @Override
+    public void constrain(final MotionEvent event) {
 
-	@Override
-	public boolean onTouch(final View v, @NonNull final MotionEvent event) {
-		imitate(v, event);
+        mSpring.setEndValue(mActiveValue);
+    }
 
-		return true;
-	}
+    @Override
+    protected double mapToSpring(final float motionValue) {
+        // not used
+        return mActiveValue;
+    }
 
-	@Override
-	@SuppressLint("ClickableViewAccessibility")
-	public void imitate(final View view, @NonNull final MotionEvent event) {
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-			constrain(event);
-			break;
+    @Override
+    public boolean onTouch(final View v, @NonNull final MotionEvent event) {
 
-		case MotionEvent.ACTION_CANCEL:
-		case MotionEvent.ACTION_UP:
-			release(event);
-			break;
+        imitate(v, event);
 
-		default:
-		}
-	}
+        return true;
+    }
+
+    @Override
+    @SuppressLint("ClickableViewAccessibility")
+    public void imitate(final View view, @NonNull final MotionEvent event) {
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                constrain(event);
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                release(event);
+                break;
+
+            default:
+        }
+    }
 }

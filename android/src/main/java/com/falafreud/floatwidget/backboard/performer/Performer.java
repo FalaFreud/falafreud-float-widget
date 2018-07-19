@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Property;
 import android.view.View;
+
 import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringListener;
 
@@ -13,77 +14,81 @@ import com.facebook.rebound.SpringListener;
  */
 public class Performer implements SpringListener {
 
-	/**
-	 * The view to modify.
-	 */
-	@Nullable
-	protected View mTarget;
-	/**
-	 * The property of the view to modify.
-	 */
-	@NonNull
-	protected Property<View, Float> mProperty;
+    /**
+     * The view to modify.
+     */
+    @Nullable
+    protected View mTarget;
+    /**
+     * The property of the view to modify.
+     */
+    @NonNull
+    protected Property<View, Float> mProperty;
 
-	/**
-	 * Constructor. Note that a {@link View} must be specified by {@link #setTarget(View)}.
-	 *
-	 * @param property
-	 * 		the view property to modify.
-	 */
-	public Performer(@NonNull final Property<View, Float> property) {
-		this(null, property);
-	}
+    /**
+     * Constructor. Note that a {@link View} must be specified by {@link #setTarget(View)}.
+     *
+     * @param property the view property to modify.
+     */
+    public Performer(@NonNull final Property<View, Float> property) {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param target
-	 * 		the view to modify.
-	 * @param property
-	 * 		the view property to modify.
-	 */
-	public Performer(@Nullable final View target, @NonNull final Property<View, Float> property) {
-		this.mTarget = target;
-		this.mProperty = property;
-	}
+        this(null, property);
+    }
 
-	@Nullable
-	public View getTarget() {
-		return mTarget;
-	}
+    /**
+     * Constructor.
+     *
+     * @param target   the view to modify.
+     * @param property the view property to modify.
+     */
+    public Performer(@Nullable final View target, @NonNull final Property<View, Float> property) {
 
-	public void setTarget(@Nullable final View target) {
-		this.mTarget = target;
-	}
+        this.mTarget = target;
+        this.mProperty = property;
+    }
 
-	@NonNull
-	public Property getProperty() {
-		return mProperty;
-	}
+    @Nullable
+    public View getTarget() {
 
-	public void setProperty(@NonNull final Property<View, Float> property) {
-		this.mProperty = property;
-	}
+        return mTarget;
+    }
 
-	@Override
-	public void onSpringUpdate(@NonNull final Spring spring) {
-		if (mProperty != null && mTarget != null) {
-			mProperty.set(mTarget, (float) spring.getCurrentValue());
-		}
-	}
+    public void setTarget(@Nullable final View target) {
 
-	@Override
-	public void onSpringAtRest(final Spring spring) {
+        this.mTarget = target;
+    }
 
-	}
+    @NonNull
+    public Property getProperty() {
 
-	@Override
-	public void onSpringActivate(final Spring spring) {
+        return mProperty;
+    }
 
-	}
+    public void setProperty(@NonNull final Property<View, Float> property) {
 
-	@Override
-	public void onSpringEndStateChange(final Spring spring) {
+        this.mProperty = property;
+    }
 
-	}
+    @Override
+    public void onSpringUpdate(@NonNull final Spring spring) {
+
+        if (mProperty != null && mTarget != null) {
+            mProperty.set(mTarget, (float) spring.getCurrentValue());
+        }
+    }
+
+    @Override
+    public void onSpringAtRest(final Spring spring) {
+
+    }
+
+    @Override
+    public void onSpringActivate(final Spring spring) {
+
+    }
+
+    @Override
+    public void onSpringEndStateChange(final Spring spring) {
+
+    }
 }

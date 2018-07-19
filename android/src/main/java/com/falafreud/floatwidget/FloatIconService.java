@@ -9,16 +9,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.falafreud.floatwidget.R;
 import com.falafreud.floatwidget.icon.IconCallback;
 import com.falafreud.floatwidget.icon.Magnet;
 
-class FloatIconService extends Service implements IconCallback
+public class FloatIconService extends Service implements IconCallback
 {
     // GLOBAL VARIABLES ============================================================================
     // =============================================================================================
 
-    private static final String TAG = "FloatIcon";
+    private static final String TAG = "FloatWidget";
     private Magnet magnet;
 
     // METHODS =====================================================================================
@@ -99,7 +98,7 @@ class FloatIconService extends Service implements IconCallback
         Toast.makeText(FloatIconService.this, "GO GO GO!", Toast.LENGTH_SHORT).show();
 
         PackageManager packageManager = FloatIconService.this.getPackageManager();
-        Intent launchIntent = packageManager.getLaunchIntentForPackage("magnet.com.magnet");
+        Intent launchIntent = packageManager.getLaunchIntentForPackage("com.falafreud.falafreud");
         FloatIconService.this.startActivity(launchIntent);
 
         FloatIconService.this.destroy();

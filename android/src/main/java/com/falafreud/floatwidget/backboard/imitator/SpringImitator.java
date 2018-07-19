@@ -1,6 +1,7 @@
 package com.falafreud.floatwidget.backboard.imitator;
 
 import android.support.annotation.NonNull;
+
 import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringListener;
 
@@ -11,66 +12,63 @@ import com.facebook.rebound.SpringListener;
  */
 public class SpringImitator extends Imitator implements SpringListener {
 
-	/**
-	 * @param spring
-	 * 		the spring to imitate
-	 */
-	public SpringImitator(@NonNull final Spring spring) {
-		super(spring);
-	}
+    /**
+     * @param spring the spring to imitate
+     */
+    public SpringImitator(@NonNull final Spring spring) {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param spring
-	 * 		the spring to imitate.
-	 * @param trackStrategy
-	 * 		the tracking strategy.
-	 * @param followStrategy
-	 * 		the follow strategy.
-	 */
-	protected SpringImitator(@NonNull final Spring spring, final int trackStrategy, final int followStrategy) {
-		super(spring, trackStrategy, followStrategy);
-	}
+        super(spring);
+    }
 
-	/**
-	 * Constructor.
-	 *
-	 * @param spring
-	 * 		the spring to imitate.
-	 * @param restValue
-	 * 		the spring value when not being perturbed.
-	 * @param trackStrategy
-	 * 		the tracking strategy.
-	 * @param followStrategy
-	 * 		the follow strategy.
-	 */
-	protected SpringImitator(@NonNull final Spring spring, final double restValue, final int trackStrategy, final int followStrategy) {
-		super(spring, restValue, trackStrategy, followStrategy);
-	}
+    /**
+     * Constructor.
+     *
+     * @param spring         the spring to imitate.
+     * @param trackStrategy  the tracking strategy.
+     * @param followStrategy the follow strategy.
+     */
+    protected SpringImitator(@NonNull final Spring spring, final int trackStrategy, final int followStrategy) {
 
-	@Override
-	protected double mapToSpring(final float motionValue) {
-		return motionValue;
-	}
+        super(spring, trackStrategy, followStrategy);
+    }
 
-	@Override
-	public void onSpringUpdate(@NonNull final Spring spring) {
-		mSpring.setEndValue(spring.getCurrentValue());
-	}
+    /**
+     * Constructor.
+     *
+     * @param spring         the spring to imitate.
+     * @param restValue      the spring value when not being perturbed.
+     * @param trackStrategy  the tracking strategy.
+     * @param followStrategy the follow strategy.
+     */
+    protected SpringImitator(@NonNull final Spring spring, final double restValue, final int trackStrategy, final int followStrategy) {
 
-	@Override
-	public void onSpringAtRest(final Spring spring) {
+        super(spring, restValue, trackStrategy, followStrategy);
+    }
 
-	}
+    @Override
+    protected double mapToSpring(final float motionValue) {
 
-	@Override
-	public void onSpringActivate(final Spring spring) {
+        return motionValue;
+    }
 
-	}
+    @Override
+    public void onSpringUpdate(@NonNull final Spring spring) {
 
-	@Override
-	public void onSpringEndStateChange(final Spring spring) {
+        mSpring.setEndValue(spring.getCurrentValue());
+    }
 
-	}
+    @Override
+    public void onSpringAtRest(final Spring spring) {
+
+    }
+
+    @Override
+    public void onSpringActivate(final Spring spring) {
+
+    }
+
+    @Override
+    public void onSpringEndStateChange(final Spring spring) {
+
+    }
 }
