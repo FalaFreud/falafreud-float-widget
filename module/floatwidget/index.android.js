@@ -30,17 +30,16 @@ class FloatWidgetManager {
     // CONSTRUCTOR
 
     constructor() {
-        super();
     }
 
     showWhenApplicationInactive(enable : boolean) : void {
-        FloatWidgetManagerModule.showWhenApplicationInactive(enable);
+        NativeModules.FloatWidgetManagerModule.showWhenApplicationInactive(enable);
     }
 
     isToShowWhenApplicationInactive() : boolean {
-        return FloatWidgetManagerModule.isToShowWhenApplicationInactive();
+        return NativeModules.FloatWidgetManagerModule.isToShowWhenApplicationInactive();
     }
-    
+
     //==========================================================================
     // METHODS
 }

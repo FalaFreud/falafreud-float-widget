@@ -74,7 +74,9 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
     public void onHostPause() {
 
         Log.d(TAG, getName() + " onHostPause");
-        this.startService();
+        if (this.isToShowWhenApplicationInactive()) {
+            this.startService();
+        }
     }
 
     @Override
