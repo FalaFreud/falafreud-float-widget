@@ -26,12 +26,17 @@
                 android:src="@drawable/logo_negative_symbol"
                 android:padding="10dp"/>
 
-            <ImageView
-                android:id="@+id/close_button"
-                android:layout_width="25dp"
+            <TextView
+                android:id="@+id/badge_textview"
+                android:layout_width="wrap_content"
                 android:layout_height="25dp"
-                android:layout_marginLeft="50dp"
-                android:src="@android:drawable/ic_menu_close_clear_cancel" />
+                android:layout_marginLeft="40dp"
+                android:background="@android:drawable/ic_notification_overlay"
+                android:text="204"
+                android:textAlignment="center"
+                android:textColor="#FFF"
+                android:textSize="12sp"
+                android:textStyle="bold" />
         </RelativeLayout>
     </RelativeLayout>
 </FrameLayout>

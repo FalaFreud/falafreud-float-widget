@@ -35,7 +35,7 @@ public class RemoveView {
 
         layout = LayoutInflater.from(context).inflate(R.layout.remove_float_layout, null);
         button = layout.findViewById(R.id.remove_button);
-        buttonImage = (ImageView) layout.findViewById(R.id.xButtonImg);
+        buttonImage = (ImageView) layout.findViewById(R.id.remove_view);
         buttonImage.setImageResource(R.drawable.remove_shape);
         buttonBottomPadding = button.getPaddingBottom();
         shadow = layout.findViewById(R.id.shadow);

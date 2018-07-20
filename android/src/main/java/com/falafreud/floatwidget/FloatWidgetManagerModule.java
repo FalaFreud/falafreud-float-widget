@@ -1,6 +1,9 @@
 package com.falafreud.floatwidget;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -13,10 +16,15 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.falafreud.floatwidget.icon.FloatIconService;
+import com.falafreud.floatwidget.message.service.MessageNotificationExtenderService;
 
+/**
+ * Created by Haroldo Shigueaki Teruya on 18/07/18.
+ */
 public class FloatWidgetManagerModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
     private final ReactApplicationContext reactContext;
+    private BroadcastReceiver broadcastReceiver = null;
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2048;
     private static final String SHOW_FLOAT_WIDGET_WHEN_APPLICATION_INACTIVE = "FLOAT_WIDGET";
     private static final String TAG = "FloatWidget";
@@ -39,22 +47,50 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
         return "FloatWidgetManagerModule";
     }
 
-    private void startService() {
+    /**
+     * This method is called "onPaused".
+     */
+    private void handleStartService() {
 
         Log.d(TAG, getName() + " startService");
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            this.reactContext.startService(new Intent(this.reactContext, FloatIconService.class));
+            this.startService();
         } else if (Settings.canDrawOverlays(this.reactContext)) {
-            this.reactContext.startService(new Intent(this.reactContext, FloatIconService.class));
+            this.startService();
         } else {
             askPermission();
         }
     }
 
-    // this line invoke the FloatIconService "onDestroy".
+    /**
+     * This method is called from "handleStartService".
+     */
+    private void startService() {
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MessageNotificationExtenderService.Constant.ACTION);
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                Log.d(TAG, getName() + " startService onReceive 0");
+                if (intent != null) {
+                    Log.d(TAG, getName() + " startService onReceive 1");
+                }
+            }
+        };
+
+        getCurrentActivity().registerReceiver(broadcastReceiver, intentFilter);
+        this.reactContext.startService(new Intent(this.reactContext, FloatIconService.class));
+    }
+
+    /**
+     * this line invoke the FloatIconService "onDestroy".
+     */
     private void stopService() {
 
+        this.reactContext.unregisterReceiver(broadcastReceiver);
         reactContext.stopService(new Intent(reactContext, FloatIconService.class));
     }
 
@@ -67,8 +103,6 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
     @Override
     public void onHostResume() {
 
-        Log.d(TAG, getName() + " onHostResume");
-        this.stopService();
     }
 
     @Override
@@ -76,13 +110,15 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
 
         Log.d(TAG, getName() + " onHostPause " + this.isToShowWhenApplicationInactive());
         if (this.isToShowWhenApplicationInactive()) {
-            this.startService();
+            this.handleStartService();
         }
     }
 
     @Override
     public void onHostDestroy() {
 
+        Log.d(TAG, getName() + " onHostDestroy");
+        this.stopService();
     }
 
     @ReactMethod

@@ -22,7 +22,7 @@
         android:paddingBottom="@dimen/default_padding_bottom">
 
         <ImageView
-            android:id="@+id/xButtonImg"
+            android:id="@+id/remove_view"
             android:layout_width="@dimen/logo_float_icon_size"
             android:layout_height="@dimen/logo_float_icon_size"/>
     </FrameLayout>

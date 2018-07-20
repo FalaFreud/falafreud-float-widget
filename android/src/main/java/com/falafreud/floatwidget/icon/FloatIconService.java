@@ -13,6 +13,9 @@ import com.falafreud.floatwidget.R;
 import com.falafreud.floatwidget.icon.magnet.IconCallback;
 import com.falafreud.floatwidget.icon.magnet.Magnet;
 
+/**
+ * Created by Haroldo Shigueaki Teruya on 18/07/18.
+ */
 public class FloatIconService extends Service implements IconCallback
 {
     // GLOBAL VARIABLES ============================================================================

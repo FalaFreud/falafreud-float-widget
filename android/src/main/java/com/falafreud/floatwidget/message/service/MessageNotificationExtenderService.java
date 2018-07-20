@@ -1,5 +1,6 @@
 package com.falafreud.floatwidget.message.service;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.onesignal.NotificationExtenderService;
@@ -9,26 +10,31 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by Haroldo Shigueaki Teruya on 15/04/18.
+ * Created by Haroldo Shigueaki Teruya on 20/07/18.
  */
 public class MessageNotificationExtenderService extends NotificationExtenderService
 {
+    // GLOBAL VARIABLES ============================================================================
+    // =============================================================================================
+
     public static final String TAG = "FloatWidget";
 
-    @Override
-    public void onCreate() {
-
-        super.onCreate();
-        Log.d(TAG, "MessageNotificationExtenderService onCreate");
+    public static final class Constant {
+        public static final String DATA = "data";
+        public static final String TYPE = "type";
+        public static final String NEW_MESSAGE = "new_message";
+        public static final String ACTION = "com.falafreud.floatwidget.unread_message_received";
     }
 
-    @Override
-    public void onDestroy() {
+    // METHODS =====================================================================================
+    // =============================================================================================
 
-        super.onDestroy();
-        Log.d(TAG, "MessageNotificationExtenderService onDestroy");
-    }
-
+    /**
+     * This method is called when the device receive an push notification using the OneSignal SDK.
+     *
+     * @param receivedResult
+     * @return
+     */
     @Override
     protected boolean onNotificationProcessing(OSNotificationReceivedResult receivedResult) {
 
@@ -36,8 +42,12 @@ public class MessageNotificationExtenderService extends NotificationExtenderServ
 
         Log.d(TAG, "MessageNotificationExtenderService onNotificationProcessing content: " + additionalData.toString());
         try {
-            String response = additionalData.getString("type");
-            Log.d(TAG, "MessageNotificationExtenderService onNotificationProcessing is new message: " + response.equals("new_message"));
+            String response = additionalData.getString(Constant.TYPE);
+            Boolean isUnreadMessage = response.equals(Constant.NEW_MESSAGE);
+            Log.d(TAG, "MessageNotificationExtenderService onNotificationProcessing is new message: " + isUnreadMessage);
+            if (isUnreadMessage) {
+                this.unreadMessageReceived();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             Log.d(TAG, "MessageNotificationExtenderService onNotificationProcessing error: " + e.toString());
@@ -45,5 +55,17 @@ public class MessageNotificationExtenderService extends NotificationExtenderServ
 
         // Return true to stop the notification from displaying.
         return false;
+    }
+
+    /**
+     * This method is responsible to start an ACTION.
+     * The receiver is the FloatWidgetManagerModule instance.
+     */
+    private void unreadMessageReceived() {
+
+        Intent intent = new Intent();
+        intent.setAction(Constant.ACTION);
+        Log.d(TAG, "MessageNotificationExtenderService unreadMessageReceived");
+        MessageNotificationExtenderService.this.sendBroadcast(intent);
     }
 }
