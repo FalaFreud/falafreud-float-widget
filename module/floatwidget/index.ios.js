@@ -29,7 +29,7 @@ class FloatWidgetManager {
     //==========================================================================
     // CONSTRUCTOR
 
-    constructor() {        
+    constructor() {
     }
 
     showWhenApplicationInactive(enable : boolean) : void {
@@ -39,7 +39,6 @@ class FloatWidgetManager {
     isToShowWhenApplicationInactive() : boolean {
 
     }
-}
 
     //==========================================================================
     // METHODS

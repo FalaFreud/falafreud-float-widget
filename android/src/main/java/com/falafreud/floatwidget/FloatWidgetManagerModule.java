@@ -1,6 +1,5 @@
 package com.falafreud.floatwidget;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -13,6 +12,7 @@ import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.falafreud.floatwidget.icon.FloatIconService;
 
 public class FloatWidgetManagerModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
@@ -54,6 +54,7 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
 
     // this line invoke the FloatIconService "onDestroy".
     private void stopService() {
+
         reactContext.stopService(new Intent(reactContext, FloatIconService.class));
     }
 
@@ -73,7 +74,7 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
     @Override
     public void onHostPause() {
 
-        Log.d(TAG, getName() + " onHostPause");
+        Log.d(TAG, getName() + " onHostPause " + this.isToShowWhenApplicationInactive());
         if (this.isToShowWhenApplicationInactive()) {
             this.startService();
         }
@@ -87,7 +88,7 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
     @ReactMethod
     public void showWhenApplicationInactive(boolean enable) {
 
-        Log.d(TAG,getName() + " showWhenApplicationInactive: " + enable);
+        Log.d(TAG, getName() + " showWhenApplicationInactive: " + enable);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext().getBaseContext());
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(SHOW_FLOAT_WIDGET_WHEN_APPLICATION_INACTIVE, enable);
