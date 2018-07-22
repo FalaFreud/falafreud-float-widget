@@ -1,12 +1,15 @@
 package com.falafreud.floatwidget;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
@@ -23,11 +26,36 @@ import com.falafreud.floatwidget.message.service.MessageNotificationExtenderServ
  */
 public class FloatWidgetManagerModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
+    // GLOBAL VARIABLES ============================================================================
+    // =============================================================================================
+
     private final ReactApplicationContext reactContext;
+//    private FloatIconService floatIconService = null;
+//    private boolean isFloatIconServiceBound = false;
+
     private BroadcastReceiver broadcastReceiver = null;
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2048;
     private static final String SHOW_FLOAT_WIDGET_WHEN_APPLICATION_INACTIVE = "FLOAT_WIDGET";
     private static final String TAG = "FloatWidget";
+
+//    private ServiceConnection floatIconServiceConnection = new ServiceConnection() {
+//        @Override
+//        public void onServiceConnected(ComponentName className, IBinder service) {
+//
+//            FloatIconService.LocalBinder binder = (FloatIconService.LocalBinder) service;
+//            floatIconService = binder.getService();
+//            isFloatIconServiceBound = true;
+//        }
+//
+//        @Override
+//        public void onServiceDisconnected(ComponentName arg0) {
+//
+//            isFloatIconServiceBound = false;
+//        }
+//    };
+
+    // METHODS =====================================================================================
+    // =============================================================================================
 
     public FloatWidgetManagerModule(ReactApplicationContext reactContext) {
 
@@ -70,19 +98,30 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(MessageNotificationExtenderService.Constant.ACTION);
-        broadcastReceiver = new BroadcastReceiver() {
+        this.broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                Log.d(TAG, getName() + " startService onReceive 0");
                 if (intent != null) {
-                    Log.d(TAG, getName() + " startService onReceive 1");
+
                 }
             }
         };
 
-        getCurrentActivity().registerReceiver(broadcastReceiver, intentFilter);
-        this.reactContext.startService(new Intent(this.reactContext, FloatIconService.class));
+//        this.isFloatIconServiceBound = true;
+
+        Intent intent = new Intent(this.reactContext, FloatIconService.class);
+
+//        this.reactContext.bindService(
+//                intent,
+//                this.floatIconServiceConnection,
+//                Context.BIND_AUTO_CREATE);
+
+        getCurrentActivity().registerReceiver(
+                this.broadcastReceiver,
+                intentFilter);
+
+        this.reactContext.startService(intent);
     }
 
     /**
@@ -90,8 +129,12 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
      */
     private void stopService() {
 
-        this.reactContext.unregisterReceiver(broadcastReceiver);
-        reactContext.stopService(new Intent(reactContext, FloatIconService.class));
+//        if (this.isFloatIconServiceBound) {
+//            this.isFloatIconServiceBound = false;
+//            this.reactContext.unbindService(this.floatIconServiceConnection);
+//        }
+        this.reactContext.unregisterReceiver(this.broadcastReceiver);
+        this.reactContext.stopService(new Intent(this.reactContext, FloatIconService.class));
     }
 
     private void askPermission() {

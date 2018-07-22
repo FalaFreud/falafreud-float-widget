@@ -3,7 +3,9 @@ package com.falafreud.floatwidget.icon;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Binder;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 import com.falafreud.floatwidget.R;
 import com.falafreud.floatwidget.icon.magnet.IconCallback;
 import com.falafreud.floatwidget.icon.magnet.Magnet;
+import com.falafreud.floatwidget.message.service.MessageNotificationExtenderService;
 
 /**
  * Created by Haroldo Shigueaki Teruya on 18/07/18.
@@ -29,9 +32,9 @@ public class FloatIconService extends Service implements IconCallback
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent)
-    {
-        return null;
+    public IBinder onBind(@NonNull Intent intent) {
+
+        return new LocalBinder();
     }
 
     @Override
@@ -109,7 +112,7 @@ public class FloatIconService extends Service implements IconCallback
 
     /**
      * This method is called when the user single click the icon.
-     * This method open the "com.fw2" application.
+     * This method open the "FalaFreud application" application.
      *
      * @param icon the view holding the icon. Get context from this view
      * @param x current icon position
@@ -152,6 +155,17 @@ public class FloatIconService extends Service implements IconCallback
     {
         Log.i(TAG, "FloatIconService onIconDestroyed()");
         this.stopSelf();
+    }
+
+    // CLASS =======================================================================================
+    // =============================================================================================
+
+    public class LocalBinder extends Binder
+    {
+        public FloatIconService getService()
+        {
+            return FloatIconService.this;
+        }
     }
 }
 

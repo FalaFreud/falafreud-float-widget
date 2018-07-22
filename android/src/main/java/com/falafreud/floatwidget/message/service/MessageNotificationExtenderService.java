@@ -1,6 +1,11 @@
 package com.falafreud.floatwidget.message.service;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Binder;
+import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.onesignal.NotificationExtenderService;
@@ -60,6 +65,7 @@ public class MessageNotificationExtenderService extends NotificationExtenderServ
     /**
      * This method is responsible to start an ACTION.
      * The receiver is the FloatWidgetManagerModule instance.
+     *
      */
     private void unreadMessageReceived() {
 
@@ -68,4 +74,7 @@ public class MessageNotificationExtenderService extends NotificationExtenderServ
         Log.d(TAG, "MessageNotificationExtenderService unreadMessageReceived");
         MessageNotificationExtenderService.this.sendBroadcast(intent);
     }
+
+    // CLASS =======================================================================================
+    // =============================================================================================
 }
