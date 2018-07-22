@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.falafreud.floatwidget.Constant;
 import com.falafreud.floatwidget.R;
 import com.falafreud.floatwidget.icon.magnet.IconCallback;
 import com.falafreud.floatwidget.icon.magnet.Magnet;
@@ -40,8 +41,25 @@ public class FloatIconService extends Service implements IconCallback
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Log.d(TAG, "FloatIconService onStartCommand");
+        Log.d(TAG, "FloatIconService onStartCommand ");
+
+        if (
+            intent != null &&
+            intent.hasExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED) &&
+            intent.getStringExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED).equals(Constant.ON_UNREAD_MESSAGE_RECEIVED)) {
+
+            Log.d(TAG, "FloatIconService onStartCommand: " + Constant.ON_UNREAD_MESSAGE_RECEIVED);
+            this.onUnreadMessageReceived();
+        }
+
+
+
         return START_NOT_STICKY;
+    }
+
+    private void onUnreadMessageReceived() {
+
+        Log.d(TAG, "FloatIconService onUnreadMessageReceived");
     }
 
     @Override

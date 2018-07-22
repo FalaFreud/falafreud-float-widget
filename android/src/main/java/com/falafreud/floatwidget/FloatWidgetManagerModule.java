@@ -30,29 +30,10 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
     // =============================================================================================
 
     private final ReactApplicationContext reactContext;
-//    private FloatIconService floatIconService = null;
-//    private boolean isFloatIconServiceBound = false;
-
     private BroadcastReceiver broadcastReceiver = null;
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2048;
     private static final String SHOW_FLOAT_WIDGET_WHEN_APPLICATION_INACTIVE = "FLOAT_WIDGET";
     private static final String TAG = "FloatWidget";
-
-//    private ServiceConnection floatIconServiceConnection = new ServiceConnection() {
-//        @Override
-//        public void onServiceConnected(ComponentName className, IBinder service) {
-//
-//            FloatIconService.LocalBinder binder = (FloatIconService.LocalBinder) service;
-//            floatIconService = binder.getService();
-//            isFloatIconServiceBound = true;
-//        }
-//
-//        @Override
-//        public void onServiceDisconnected(ComponentName arg0) {
-//
-//            isFloatIconServiceBound = false;
-//        }
-//    };
 
     // METHODS =====================================================================================
     // =============================================================================================
@@ -97,30 +78,26 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
     private void startService() {
 
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(MessageNotificationExtenderService.Constant.ACTION);
+        intentFilter.addAction(Constant.ACTION);
         this.broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
                 if (intent != null) {
-
+                    FloatWidgetManagerModule.this.onUnreadMessageReceived();
                 }
             }
         };
 
-//        this.isFloatIconServiceBound = true;
+        Intent intent = new Intent(this.reactContext, FloatIconService.class);
+        getCurrentActivity().registerReceiver(this.broadcastReceiver, intentFilter);
+        this.reactContext.startService(intent);
+    }
+
+    private void onUnreadMessageReceived() {
 
         Intent intent = new Intent(this.reactContext, FloatIconService.class);
-
-//        this.reactContext.bindService(
-//                intent,
-//                this.floatIconServiceConnection,
-//                Context.BIND_AUTO_CREATE);
-
-        getCurrentActivity().registerReceiver(
-                this.broadcastReceiver,
-                intentFilter);
-
+        intent.putExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED, Constant.ON_UNREAD_MESSAGE_RECEIVED);
         this.reactContext.startService(intent);
     }
 
@@ -129,10 +106,6 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
      */
     private void stopService() {
 
-//        if (this.isFloatIconServiceBound) {
-//            this.isFloatIconServiceBound = false;
-//            this.reactContext.unbindService(this.floatIconServiceConnection);
-//        }
         this.reactContext.unregisterReceiver(this.broadcastReceiver);
         this.reactContext.stopService(new Intent(this.reactContext, FloatIconService.class));
     }

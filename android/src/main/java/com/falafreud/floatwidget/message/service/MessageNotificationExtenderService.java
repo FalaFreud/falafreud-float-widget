@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.falafreud.floatwidget.Constant;
 import com.onesignal.NotificationExtenderService;
 import com.onesignal.OSNotificationReceivedResult;
 
@@ -23,13 +24,6 @@ public class MessageNotificationExtenderService extends NotificationExtenderServ
     // =============================================================================================
 
     public static final String TAG = "FloatWidget";
-
-    public static final class Constant {
-        public static final String DATA = "data";
-        public static final String TYPE = "type";
-        public static final String NEW_MESSAGE = "new_message";
-        public static final String ACTION = "com.falafreud.floatwidget.unread_message_received";
-    }
 
     // METHODS =====================================================================================
     // =============================================================================================
