@@ -15,18 +15,17 @@ import com.falafreud.floatwidget.Constant;
 import com.falafreud.floatwidget.R;
 import com.falafreud.floatwidget.icon.magnet.IconCallback;
 import com.falafreud.floatwidget.icon.magnet.Magnet;
-import com.falafreud.floatwidget.message.service.MessageNotificationExtenderService;
 
 /**
  * Created by Haroldo Shigueaki Teruya on 18/07/18.
  */
-public class FloatIconService extends Service implements IconCallback
-{
+public class FloatIconService extends Service implements IconCallback {
     // GLOBAL VARIABLES ============================================================================
     // =============================================================================================
 
     private static final String TAG = "FloatWidget";
-    private Magnet magnet;
+    private Magnet magnet = null;
+    private boolean isStartingService = false;
 
     // METHODS =====================================================================================
     // =============================================================================================
@@ -35,7 +34,7 @@ public class FloatIconService extends Service implements IconCallback
     @Override
     public IBinder onBind(@NonNull Intent intent) {
 
-        return new LocalBinder();
+        return null;
     }
 
     @Override
@@ -43,9 +42,7 @@ public class FloatIconService extends Service implements IconCallback
 
         Log.d(TAG, "FloatIconService onStartCommand ");
 
-        if (
-            intent != null &&
-            intent.hasExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED)) {
+        if (intent != null && intent.hasExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED)) {
 
             int count = intent.getIntExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED, 0);
             Log.d(TAG, "FloatIconService onStartCommand: " + Constant.ON_UNREAD_MESSAGE_RECEIVED + ", count: " + count);
@@ -64,12 +61,13 @@ public class FloatIconService extends Service implements IconCallback
     }
 
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
+
         super.onCreate();
 
         Log.d(TAG, "FloatIconService onCreate");
         this.startMagnet();
+        this.isStartingService = false;
     }
 
     /**
@@ -85,23 +83,23 @@ public class FloatIconService extends Service implements IconCallback
         super.onDestroy();
     }
 
-    void destroy()
-    {
-        if (magnet != null)
-        {
+    void destroy() {
+
+        if (magnet != null) {
             magnet.destroy();
         }
         this.stopSelf();
     }
 
+
+
     /**
      * This method instantiate the magnet object.
      * See {@link Magnet}
      */
-    public void startMagnet()
-    {
-        if (magnet == null)
-        {
+    public void startMagnet() {
+
+        if (magnet == null) {
             magnet = Magnet.newBuilder(FloatIconService.this)
                     .setIconView(R.layout.logo_float_layout)
                     .setIconCallback(this)
@@ -124,9 +122,8 @@ public class FloatIconService extends Service implements IconCallback
      * @param y y coordinate on the screen in pixels
      */
     @Override
-    public void onMove(float x, float y)
-    {
-        Log.i(TAG, "onMove(" + x + "," + y + ")");
+    public void onMove(float x, float y) {
+
     }
 
     /**
@@ -134,20 +131,20 @@ public class FloatIconService extends Service implements IconCallback
      * This method open the "FalaFreud application" application.
      *
      * @param icon the view holding the icon. Get context from this view
-     * @param x current icon position
-     * @param y current icon position
+     * @param x    current icon position
+     * @param y    current icon position
      */
     @Override
-    public void onIconClick(View icon, float x, float y)
-    {
+    public void onIconClick(View icon, float x, float y) {
+
         Log.i(TAG, "FloatIconService onIconClick");
-        Toast.makeText(FloatIconService.this, "GO GO GO!", Toast.LENGTH_SHORT).show();
 
-        PackageManager packageManager = FloatIconService.this.getPackageManager();
-        Intent launchIntent = packageManager.getLaunchIntentForPackage("com.falafreud.falafreud");
-        FloatIconService.this.startActivity(launchIntent);
-
-//        FloatIconService.this.destroy();
+        if (!isStartingService) {
+            isStartingService = true;
+            PackageManager packageManager = FloatIconService.this.getPackageManager();
+            Intent launchIntent = packageManager.getLaunchIntentForPackage("com.falafreud.falafreud");
+            FloatIconService.this.startActivity(launchIntent);
+        }
     }
 
     /**
@@ -155,11 +152,10 @@ public class FloatIconService extends Service implements IconCallback
      * This method destroy the icon.
      */
     @Override
-    public void onFlingAway()
-    {
+    public void onFlingAway() {
+
         Log.i(TAG, "FloatIconService onFlingAway");
-        if (magnet != null)
-        {
+        if (magnet != null) {
             magnet.destroy();
             magnet = null;
         }
@@ -170,8 +166,8 @@ public class FloatIconService extends Service implements IconCallback
      * This method finish the service.
      */
     @Override
-    public void onIconDestroyed()
-    {
+    public void onIconDestroyed() {
+
         Log.i(TAG, "FloatIconService onIconDestroyed()");
         this.stopSelf();
     }
@@ -179,10 +175,10 @@ public class FloatIconService extends Service implements IconCallback
     // CLASS =======================================================================================
     // =============================================================================================
 
-    public class LocalBinder extends Binder
-    {
-        public FloatIconService getService()
-        {
+    public class LocalBinder extends Binder {
+
+        public FloatIconService getService() {
+
             return FloatIconService.this;
         }
     }

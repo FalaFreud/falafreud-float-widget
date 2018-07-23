@@ -18,6 +18,7 @@ import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.falafreud.floatwidget.icon.FloatIconService;
 import com.falafreud.floatwidget.message.service.MessageNotificationExtenderService;
 
@@ -31,8 +32,10 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
 
     private final ReactApplicationContext reactContext;
     private BroadcastReceiver broadcastReceiver = null;
+    private boolean isBackground = false;
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2048;
     private static final String SHOW_FLOAT_WIDGET_WHEN_APPLICATION_INACTIVE = "FLOAT_WIDGET";
+    private static final String ON_HOST_PAUSE = "onHostPause";
     private static final String TAG = "FloatWidget";
 
     // METHODS =====================================================================================
@@ -62,9 +65,11 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
      */
     private void onUnreadMessageReceived() {
 
-        Intent intent = new Intent(this.reactContext, FloatIconService.class);
-        intent.putExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED, 1);
-        this.reactContext.startService(intent);
+        if (this.isBackground) {
+            Intent intent = new Intent(this.reactContext, FloatIconService.class);
+            intent.putExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED, 1);
+            this.reactContext.startService(intent);
+        }
     }
 
     /**
@@ -72,7 +77,17 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
      */
     private void stopService() {
 
-        this.reactContext.unregisterReceiver(this.broadcastReceiver);
+        try {
+            if (this.broadcastReceiver != null) {
+                this.reactContext.unregisterReceiver(this.broadcastReceiver);
+            }
+        } catch (IllegalArgumentException e) {
+            Log.d(TAG, getName() + " stopService: " + e.toString());
+            e.printStackTrace();
+        } catch (Exception e) {
+            Log.d(TAG, getName() + " stopService: " + e.toString());
+            e.printStackTrace();
+        }
         this.reactContext.stopService(new Intent(this.reactContext, FloatIconService.class));
     }
 
@@ -80,11 +95,6 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
 
         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + this.reactContext.getPackageName()));
         getCurrentActivity().startActivityForResult(intent, SYSTEM_ALERT_WINDOW_PERMISSION);
-    }
-
-    @Override
-    public void onHostResume() {
-
     }
 
     @ReactMethod
@@ -119,13 +129,24 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
 
         Intent intent = new Intent(this.reactContext, FloatIconService.class);
         intent.putExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED, count);
-        getCurrentActivity().registerReceiver(this.broadcastReceiver, intentFilter);
+        this.reactContext.registerReceiver(this.broadcastReceiver, intentFilter);
         this.reactContext.startService(intent);
+    }
+
+    @Override
+    public void onHostResume() {
+
+        Log.d(TAG, getName() + " onHostDestroy");
+        this.stopService();
+        this.isBackground = false;
     }
 
     @Override
     public void onHostPause() {
 
+        Log.d(TAG, getName() + " onHostPause: " + isBackground);
+        this.isBackground = true;
+        this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(ON_HOST_PAUSE, null);
     }
 
     @Override

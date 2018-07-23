@@ -16,7 +16,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,7 +23,6 @@ import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringConfig;
 import com.facebook.rebound.SpringListener;
 import com.facebook.rebound.SpringSystem;
-import com.falafreud.floatwidget.Constant;
 import com.falafreud.floatwidget.R;
 import com.falafreud.floatwidget.icon.backboard.Actor;
 import com.falafreud.floatwidget.icon.backboard.MotionProperty;
@@ -554,11 +552,11 @@ public class Magnet
                     int margin = Math.round(pxFromDp(40.0f));
                     if (position) {
                         // right
-                        Log.d(TAG, "Magnet setBadgePosition: right");
+//                        Log.d(TAG, "Magnet setBadgePosition: right");
                         layoutParams.setMargins(0, layoutParams.topMargin, margin, layoutParams.bottomMargin);
                     } else {
                         // left
-                        Log.d(TAG, "Magnet setBadgePosition: left");
+//                        Log.d(TAG, "Magnet setBadgePosition: left");
                         layoutParams.setMargins(margin, layoutParams.topMargin, 0, layoutParams.bottomMargin);
                     }
                     this.setBadgePosition(badgeTextView, layoutParams);
@@ -660,9 +658,22 @@ public class Magnet
             this.iconCallback.onMove(this.iconPosition[0], this.iconPosition[1]);
         }
 
-        if (this.shouldStickToWall) {
-            boolean endX = this.iconPosition[0] > this.context.getResources().getDisplayMetrics().widthPixels / 2;
-            this.handleSetBadgePosition(endX);
+        try {
+            if (
+                    this.shouldStickToWall &&
+                            this.context != null &&
+                            this.context.getResources() != null &&
+                            this.context.getResources().getDisplayMetrics() != null) {
+
+                boolean endX = this.iconPosition[0] > this.context.getResources().getDisplayMetrics().widthPixels / 2;
+                this.handleSetBadgePosition(endX);
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            Log.d(TAG, "onSpringUpdate: error: " + e.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(TAG, "onSpringUpdate: error: " + e.toString());
         }
     }
 
