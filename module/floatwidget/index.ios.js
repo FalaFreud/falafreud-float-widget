@@ -32,6 +32,10 @@ class FloatWidgetManager {
     constructor() {
     }
 
+    handleStartService(count : int) : void {
+            
+    }
+
     showWhenApplicationInactive(enable : boolean) : void {
 
     }

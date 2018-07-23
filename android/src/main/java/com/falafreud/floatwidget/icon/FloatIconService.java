@@ -45,21 +45,22 @@ public class FloatIconService extends Service implements IconCallback
 
         if (
             intent != null &&
-            intent.hasExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED) &&
-            intent.getStringExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED).equals(Constant.ON_UNREAD_MESSAGE_RECEIVED)) {
+            intent.hasExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED)) {
 
-            Log.d(TAG, "FloatIconService onStartCommand: " + Constant.ON_UNREAD_MESSAGE_RECEIVED);
-            this.onUnreadMessageReceived();
+            int count = intent.getIntExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED, 0);
+            Log.d(TAG, "FloatIconService onStartCommand: " + Constant.ON_UNREAD_MESSAGE_RECEIVED + ", count: " + count);
+            if (count != 0) {
+                this.onUnreadMessageReceived(count);
+            }
         }
-
-
 
         return START_NOT_STICKY;
     }
 
-    private void onUnreadMessageReceived() {
+    private void onUnreadMessageReceived(int count) {
 
         Log.d(TAG, "FloatIconService onUnreadMessageReceived");
+        magnet.onUnreadMessageReceived(count);
     }
 
     @Override

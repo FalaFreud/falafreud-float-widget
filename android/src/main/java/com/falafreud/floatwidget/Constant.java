@@ -12,4 +12,7 @@ public final class Constant {
 
     // uset to send data to the FloatIconService
     public static final String ON_UNREAD_MESSAGE_RECEIVED = "on_unread_message_received";
+
+    public static final int LEFT = 0;
+    public static final int RIGHT = 0;
 }

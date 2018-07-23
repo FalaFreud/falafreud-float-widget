@@ -57,47 +57,13 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
     }
 
     /**
-     * This method is called "onPaused".
+     * This method is called by {@link MessageNotificationExtenderService}.
+     * This method is called when the application receive an notification.
      */
-    private void handleStartService() {
-
-        Log.d(TAG, getName() + " startService");
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            this.startService();
-        } else if (Settings.canDrawOverlays(this.reactContext)) {
-            this.startService();
-        } else {
-            askPermission();
-        }
-    }
-
-    /**
-     * This method is called from "handleStartService".
-     */
-    private void startService() {
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Constant.ACTION);
-        this.broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                if (intent != null) {
-                    FloatWidgetManagerModule.this.onUnreadMessageReceived();
-                }
-            }
-        };
-
-        Intent intent = new Intent(this.reactContext, FloatIconService.class);
-        getCurrentActivity().registerReceiver(this.broadcastReceiver, intentFilter);
-        this.reactContext.startService(intent);
-    }
-
     private void onUnreadMessageReceived() {
 
         Intent intent = new Intent(this.reactContext, FloatIconService.class);
-        intent.putExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED, Constant.ON_UNREAD_MESSAGE_RECEIVED);
+        intent.putExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED, 1);
         this.reactContext.startService(intent);
     }
 
@@ -121,13 +87,45 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
 
     }
 
+    @ReactMethod
+    public void handleStartService(int count) {
+
+        Log.d(TAG, getName() + " handleStartService: " + count);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            this.startService(count);
+        } else if (Settings.canDrawOverlays(this.reactContext)) {
+            this.startService(count);
+        } else {
+            askPermission();
+        }
+    }
+
+    /**
+     * This method is called from "handleStartService".
+     */
+    private void startService(int count) {
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constant.ACTION);
+        this.broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                if (intent != null) {
+                    FloatWidgetManagerModule.this.onUnreadMessageReceived();
+                }
+            }
+        };
+
+        Intent intent = new Intent(this.reactContext, FloatIconService.class);
+        intent.putExtra(Constant.ON_UNREAD_MESSAGE_RECEIVED, count);
+        getCurrentActivity().registerReceiver(this.broadcastReceiver, intentFilter);
+        this.reactContext.startService(intent);
+    }
+
     @Override
     public void onHostPause() {
 
-        Log.d(TAG, getName() + " onHostPause " + this.isToShowWhenApplicationInactive());
-        if (this.isToShowWhenApplicationInactive()) {
-            this.handleStartService();
-        }
     }
 
     @Override
