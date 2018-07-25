@@ -589,11 +589,9 @@ public class Magnet implements
                     int margin = Math.round(pxFromDp(40.0f));
                     if (position) {
                         // right
-//                        Log.d(TAG, "Magnet setBadgePosition: right");
                         layoutParams.setMargins(0, layoutParams.topMargin, margin, layoutParams.bottomMargin);
                     } else {
                         // left
-//                        Log.d(TAG, "Magnet setBadgePosition: left");
                         layoutParams.setMargins(margin, layoutParams.topMargin, 0, layoutParams.bottomMargin);
                     }
                     this.setBadgePosition(badgeTextView, layoutParams);
@@ -659,6 +657,10 @@ public class Magnet implements
 
     // View.OnTouchListener
 
+    private float currentX = 0;
+    private float currentY = 0;
+    private double distance = 0;
+
     @Override
     public boolean onTouch(View view, MotionEvent event) {
 
@@ -666,9 +668,12 @@ public class Magnet implements
         if (action == MotionEvent.ACTION_DOWN) {
             isBeingDragged = true;
             lastTouchDown = System.currentTimeMillis();
+            currentX = event.getX();
+            currentY = event.getY();
             return true;
         } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             isBeingDragged = false;
+            distance = Magnet.distSq(currentX, currentY, event.getX(), event.getY());
             return true;
         }
         return false;
@@ -679,11 +684,16 @@ public class Magnet implements
     @Override
     public void onClick(View view) {
 
-        xSpring.setAtRest();
-        ySpring.setAtRest();
-        view.getLocationOnScreen(iconPosition);
-        if (iconCallback != null) {
-            iconCallback.onIconClick(view, iconPosition[0], iconPosition[1]);
+        Log.d(TAG, "Magnet onClick: " + distance);
+
+        if (distance > 20) {
+            xSpring.setAtRest();
+            ySpring.setAtRest();
+            view.getLocationOnScreen(iconPosition);
+            if (iconCallback != null) {
+                iconCallback.onIconClick(view, iconPosition[0], iconPosition[1]);
+
+            }
         }
     }
 
