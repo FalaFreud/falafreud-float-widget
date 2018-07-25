@@ -103,7 +103,6 @@ public class FloatIconService extends Service implements IconCallback {
             magnet = Magnet.newBuilder(FloatIconService.this)
                     .setIconView(R.layout.logo_float_layout)
                     .setIconCallback(this)
-                    .setHideFactor(0.2f)
                     .setShouldShowRemoveView(true)
                     .setRemoveIconResId(R.drawable.remove_shape)
                     .setRemoveIconShadow(R.drawable.bottom_shadow)

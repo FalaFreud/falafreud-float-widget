@@ -4,11 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,8 +38,10 @@ import java.lang.reflect.InvocationTargetException;
 /**
  *
  */
-public class Magnet
-        implements View.OnTouchListener, View.OnClickListener, ViewTreeObserver.OnGlobalLayoutListener,
+public class Magnet implements
+        View.OnTouchListener,
+        View.OnClickListener,
+        ViewTreeObserver.OnGlobalLayoutListener,
         SpringListener {
 
     private static final String TAG = "FloatWidget";
@@ -286,7 +290,7 @@ public class Magnet
     protected MagnetImitator motionImitatorY;
     protected WindowManagerPerformer xWindowManagerPerformer;
     protected WindowManagerPerformer yWindowManagerPerformer;
-    protected float hideFactor = 0.3f;
+    protected float hideFactor = 0.0f;
     protected float xMinValue, xMaxValue;
     protected float yMinValue, yMaxValue;
     protected int iconWidth = -1, iconHeight = -1;
@@ -368,9 +372,14 @@ public class Magnet
     protected int getStatusBarHeight() {
 
         int result = 0;
-        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = context.getResources().getDimensionPixelSize(resourceId);
+        try {
+            int resourceId = getResource().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                result = getResource().getDimensionPixelSize(resourceId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(TAG, "Magnet getStatusBarHeight error: " + e.toString());
         }
         return result;
     }
@@ -378,10 +387,14 @@ public class Magnet
     protected int getNavBarHeight() {
 
         int result = 0;
-        int resourceId =
-                context.getResources().getIdentifier("navigation_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            return context.getResources().getDimensionPixelSize(resourceId);
+        try {
+            int resourceId = getResource().getIdentifier("navigation_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                return getResource().getDimensionPixelSize(resourceId);
+            }
+        } catch (Exception e) {
+            e.toString();
+            Log.d(TAG, "Magnet getNavBarHeight error: " + e.toString());
         }
         return result;
     }
@@ -409,7 +422,13 @@ public class Magnet
 
     protected float pxFromDp(float dp) {
 
-        return dp * context.getResources().getDisplayMetrics().density;
+        try {
+            return dp * getResource().getDisplayMetrics().density;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(TAG, "Magnet pxFromDp: " + e.toString());
+        }
+        return Math.round(dp);
     }
 
     protected boolean iconOverlapsWithRemoveView() {
@@ -469,8 +488,7 @@ public class Magnet
         }
         xSpring.addListener(this);
         ySpring.addListener(this);
-        context.registerReceiver(orientationChangeReceiver,
-                new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED));
+        context.registerReceiver(orientationChangeReceiver, new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED));
     }
 
     /**
@@ -525,21 +543,40 @@ public class Magnet
      */
     public void goToWall() {
 
-        if (shouldStickToWall && !isGoingToWall) {
-            isGoingToWall = true;
-            iconView.getLocationOnScreen(iconPosition);
-            boolean endX = iconPosition[0] > context.getResources().getDisplayMetrics().widthPixels / 2;
-            float nearestXWall = endX ? xMaxValue : xMinValue;
-            actor.removeAllListeners();
-            xSpring.setEndValue(nearestXWall);
-            float velocity = iconPosition[0] > nearestXWall ? -goToWallVelocity : goToWallVelocity;
-            if (endX) {
-                xSpring.setVelocity(velocity);
-            } else {
-                xSpring.setVelocity(velocity);
+        try {
+            if (shouldStickToWall && !isGoingToWall) {
+                isGoingToWall = true;
+                iconView.getLocationOnScreen(iconPosition);
+                boolean endX = false;
+                endX = iconPosition[0] > getResource().getDisplayMetrics().widthPixels / 2;
+                float nearestXWall = endX ? xMaxValue : xMinValue;
+                actor.removeAllListeners();
+                xSpring.setEndValue(nearestXWall);
+                float velocity = iconPosition[0] > nearestXWall ? -goToWallVelocity : goToWallVelocity;
+                if (endX) {
+                    xSpring.setVelocity(velocity);
+                } else {
+                    xSpring.setVelocity(velocity);
+                }
             }
+            actor.addAllListeners();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        actor.addAllListeners();
+    }
+
+    @Nullable
+    private Resources getResource() throws Exception {
+
+        try {
+            if (this.context != null && this.context.getResources() != null) {
+                return this.context.getResources();
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Magnet getResource: " + e.toString());
+            throw e;
+        }
+        return null;
     }
 
     private void handleSetBadgePosition(boolean position) {
@@ -599,23 +636,25 @@ public class Magnet
     @Override
     public void onGlobalLayout() {
 
-        xMinValue = -iconView.getMeasuredWidth() * hideFactor;
-        motionImitatorX.setMinValue(xMinValue);
-        xMaxValue = context.getResources().getDisplayMetrics().widthPixels - ((1f - hideFactor)
-                * iconView.getMeasuredWidth());
-        motionImitatorX.setMaxValue(xMaxValue);
-        yMinValue = getStatusBarHeight() - iconView.getMeasuredHeight() * hideFactor;
-        motionImitatorY.setMinValue(yMinValue);
-        yMaxValue = context.getResources().getDisplayMetrics().heightPixels - getNavBarHeight() + (
-                hideFactor
-                        * iconView.getMeasuredHeight());
-        motionImitatorY.setMaxValue(yMaxValue);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            iconView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        } else {
-            iconView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        try {
+            xMinValue = -iconView.getMeasuredWidth() * hideFactor;
+            motionImitatorX.setMinValue(xMinValue);
+            xMaxValue = getResource().getDisplayMetrics().widthPixels - ((1f - hideFactor) * iconView.getMeasuredWidth());
+            motionImitatorX.setMaxValue(xMaxValue);
+            yMinValue = getStatusBarHeight() - iconView.getMeasuredHeight() * hideFactor;
+            motionImitatorY.setMinValue(yMinValue);
+            yMaxValue = getResource().getDisplayMetrics().heightPixels - getNavBarHeight() + (hideFactor * iconView.getMeasuredHeight());
+            motionImitatorY.setMaxValue(yMaxValue);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                iconView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            } else {
+                iconView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            }
+            goToWall();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(TAG, "Magnet onGlobalLayout error: " + e.toString());
         }
-        goToWall();
     }
 
     // View.OnTouchListener
@@ -659,13 +698,9 @@ public class Magnet
         }
 
         try {
-            if (
-                    this.shouldStickToWall &&
-                            this.context != null &&
-                            this.context.getResources() != null &&
-                            this.context.getResources().getDisplayMetrics() != null) {
+            if (this.shouldStickToWall && getResource().getDisplayMetrics() != null) {
 
-                boolean endX = this.iconPosition[0] > this.context.getResources().getDisplayMetrics().widthPixels / 2;
+                boolean endX = this.iconPosition[0] > getResource().getDisplayMetrics().widthPixels / 2;
                 this.handleSetBadgePosition(endX);
             }
         } catch (NullPointerException e) {
@@ -789,8 +824,13 @@ public class Magnet
                 removeView.button.getLocationOnScreen(removeViewPosition);
                 switch (mProperty) {
                     case X:
-                        int midPoint = context.getResources().getDisplayMetrics().widthPixels / 2;
-                        getSpring().setEndValue(midPoint - (iconView.getWidth() / 2));
+                        try {
+                            int midPoint = getResource().getDisplayMetrics().widthPixels / 2;
+                            getSpring().setEndValue(midPoint - (iconView.getWidth() / 2));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.d(TAG, "Magnet mime error: " + e.toString());
+                        }
                         break;
                     case Y:
                         getSpring().setEndValue(removeViewPosition[1] - iconView.getHeight() / 2);

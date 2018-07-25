@@ -35,7 +35,6 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
     private boolean isBackground = false;
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2048;
     private static final String SHOW_FLOAT_WIDGET_WHEN_APPLICATION_INACTIVE = "FLOAT_WIDGET";
-    private static final String ON_HOST_PAUSE = "onHostPause";
     private static final String TAG = "FloatWidget";
 
     // METHODS =====================================================================================
@@ -47,10 +46,6 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
 
         this.reactContext = reactContext;
         this.getReactApplicationContext().addLifecycleEventListener(this);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(reactContext)) {
-            this.askPermission();
-        }
     }
 
     @Override
@@ -101,12 +96,15 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
     public void handleStartService(int count) {
 
         Log.d(TAG, getName() + " handleStartService: " + count);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            this.startService(count);
-        } else if (Settings.canDrawOverlays(this.reactContext)) {
-            this.startService(count);
-        } else {
-            askPermission();
+
+        if (this.isToShowWhenApplicationInactive()) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                this.startService(count);
+            } else if (Settings.canDrawOverlays(this.reactContext)) {
+                this.startService(count);
+            } else {
+                askPermission();
+            }
         }
     }
 
@@ -146,7 +144,6 @@ public class FloatWidgetManagerModule extends ReactContextBaseJavaModule impleme
 
         Log.d(TAG, getName() + " onHostPause: " + isBackground);
         this.isBackground = true;
-        this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(ON_HOST_PAUSE, null);
     }
 
     @Override

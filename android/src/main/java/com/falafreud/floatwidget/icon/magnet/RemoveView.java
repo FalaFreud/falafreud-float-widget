@@ -2,6 +2,7 @@ package com.falafreud.floatwidget.icon.magnet;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,6 +15,8 @@ import com.falafreud.floatwidget.R;
  * ViewHolder for the remove Icon.
  */
 public class RemoveView {
+
+    private static final String TAG = "FloatWidget";
 
     protected View layout;
     protected View button;
@@ -104,7 +107,14 @@ public class RemoveView {
                         @Override
                         public void run() {
 
-                            windowManager.removeView(layout);
+                            try {
+                                if (layout != null && layout.getParent() != null) {
+                                    windowManager.removeView(layout);
+                                }
+                            } catch (NullPointerException e) {
+                                e.printStackTrace();
+                                Log.d(TAG, "RemoveView onAnimationEnd run: " + e.toString());
+                            }
                         }
                     });
                 }
@@ -134,8 +144,13 @@ public class RemoveView {
 
     protected void destroy() {
 
-        if (layout != null && layout.getParent() != null) {
-            windowManager.removeView(layout);
+        try {
+            if (layout != null && layout.getParent() != null) {
+                windowManager.removeView(layout);
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            Log.d(TAG, "RemoveView onAnimationEnd run: " + e.toString());
         }
         layout = null;
         windowManager = null;
