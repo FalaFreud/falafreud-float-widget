@@ -406,26 +406,28 @@ public class Magnet implements
 
     private void prepareIconView() {
 
-//        try {
-//            Log.d(TAG, "Magnet prepareIconView");
-//            this.iconImageView = this.iconView.findViewById(R.id.icon_imageview);
-//            RelativeLayout.LayoutParams iconLayoutParams = (RelativeLayout.LayoutParams) this.iconImageView.getLayoutParams();
-//
-//            this.iconPressedLayoutParams = new  RelativeLayout.LayoutParams(iconLayoutParams);
-//            this.iconUnPressedLayoutParams = new RelativeLayout.LayoutParams(iconLayoutParams);
-//
-//            this.iconPressedLayoutParams.height = (int) pxFromDp(55);
-//            this.iconPressedLayoutParams.width = (int) pxFromDp(55);
-//
-//            this.iconUnPressedLayoutParams.height = (int) pxFromDp(60);
-//            this.iconUnPressedLayoutParams.width = (int) pxFromDp(60);
-//        } catch (NullPointerException e) {
-//            e.printStackTrace();
-//        } catch (IllegalStateException e) {
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                this.iconImageView = (ImageView) this.iconView.findViewById(R.id.icon_imageview);
+                RelativeLayout.LayoutParams iconLayoutParams = (RelativeLayout.LayoutParams) this.iconImageView.getLayoutParams();
+
+                this.iconPressedLayoutParams =  new RelativeLayout.LayoutParams(iconLayoutParams);
+                this.iconUnPressedLayoutParams = new RelativeLayout.LayoutParams(iconLayoutParams);
+
+                this.iconPressedLayoutParams.height = (int) pxFromDp(55);
+                this.iconPressedLayoutParams.width = (int) pxFromDp(55);
+
+                this.iconUnPressedLayoutParams.height = (int) pxFromDp(60);
+                this.iconUnPressedLayoutParams.width = (int) pxFromDp(60);
+            }
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     protected int getStatusBarHeight() {
@@ -613,15 +615,15 @@ public class Magnet implements
                 RelativeLayout.LayoutParams badgeLayoutParams = (RelativeLayout.LayoutParams) badgeTextView.getLayoutParams();
                 RelativeLayout.LayoutParams iconLayoutParams = (RelativeLayout.LayoutParams) iconImageView.getLayoutParams();
                 if (badgeLayoutParams != null) {
-                    int margin = Math.round(pxFromDp(40.0f));
+                    int badgeMargin = Math.round(pxFromDp(40.0f));
                     int iconMargin = Math.round(pxFromDp(10.0f));
                     if (position) {
                         // right
-                        badgeLayoutParams.setMargins(0, badgeLayoutParams.topMargin, margin, badgeLayoutParams.bottomMargin);
+                        badgeLayoutParams.setMargins(0, badgeLayoutParams.topMargin, badgeMargin, badgeLayoutParams.bottomMargin);
                         iconLayoutParams.setMargins(iconMargin, iconLayoutParams.topMargin, 0, iconLayoutParams.bottomMargin);
                     } else {
                         // left
-                        badgeLayoutParams.setMargins(margin, badgeLayoutParams.topMargin, 0, badgeLayoutParams.bottomMargin);
+                        badgeLayoutParams.setMargins(badgeMargin, badgeLayoutParams.topMargin, 0, badgeLayoutParams.bottomMargin);
                         iconLayoutParams.setMargins(0, iconLayoutParams.topMargin, iconMargin, iconLayoutParams.bottomMargin);
                     }
                     this.setBadgePosition(badgeTextView, badgeLayoutParams, iconImageView, iconLayoutParams);
@@ -677,7 +679,9 @@ public class Magnet implements
     private void onIconPressed(boolean isPressed) {
 
         try {
-//            iconImageView.setLayoutParams(isPressed ? iconPressedLayoutParams : iconUnPressedLayoutParams);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                iconImageView.setLayoutParams(isPressed ? iconPressedLayoutParams : iconUnPressedLayoutParams);
+            }
         } catch (NullPointerException e) {
             e.printStackTrace();
         } catch (IllegalStateException e) {
@@ -733,7 +737,7 @@ public class Magnet implements
         } else if (action == MotionEvent.ACTION_MOVE) {
             this.distance = getDistance(this.lastX, this.lastY, event.getRawX(), event.getRawY());
             Log.d(TAG, "Magnet onTouch ACTION_MOVE " + this.distance);
-            if (!this.isToMove && this.distance > 100) {
+            if (!this.isToMove && this.distance > 50) {
                 this.isToMove = true;
             }
             return this.isToMove;
@@ -847,8 +851,7 @@ public class Magnet implements
             if (
                     !isGoingToWall &&
                             !isSnapping &&
-                            (Math.abs(ySpring.getVelocity()) >= flingVelocityMinimum || Math.abs(xSpring.getVelocity()) >= flingVelocityMinimum))
-            {
+                            (Math.abs(ySpring.getVelocity()) >= flingVelocityMinimum || Math.abs(xSpring.getVelocity()) >= flingVelocityMinimum)) {
                 isFlinging = true;
             }
             if (!isFlinging && !isSnapping) {
