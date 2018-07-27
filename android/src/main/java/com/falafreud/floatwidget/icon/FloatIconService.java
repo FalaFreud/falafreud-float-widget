@@ -140,6 +140,7 @@ public class FloatIconService extends Service implements IconCallback {
 
         if (!isStartingService) {
             isStartingService = true;
+            destroy();
             PackageManager packageManager = FloatIconService.this.getPackageManager();
             Intent launchIntent = packageManager.getLaunchIntentForPackage("com.falafreud.falafreud");
             FloatIconService.this.startActivity(launchIntent);
